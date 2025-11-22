@@ -71,10 +71,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     // Text templates/expansion
     public static final String PREF_ENABLE_TEXT_TEMPLATES = "enable_text_templates";
 
-    // AI features
-    public static final String PREF_ENABLE_WHISPER_STT = "enable_whisper_stt";
-    public static final String PREF_ENABLE_LLAMA_LLM = "enable_llama_llm";
-
     public static final String PREF_AUTO_CAP = "auto_cap";
     public static final String PREF_VIBRATE_ON = "vibrate_on";
     public static final String PREF_VIBRATE_IN_DND_MODE = "vibrate_in_dnd_mode";

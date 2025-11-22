@@ -686,24 +686,6 @@ New dictionary:
     <string name="manage_text_templates">Manage templates</string>
     <string name="manage_text_templates_summary">Add, edit, or remove text expansion shortcuts</string>
 
-    <!-- AI features -->
-    <string name="enable_whisper_stt">Enable Whisper Speech-to-Text (Experimental)</string>
-    <string name="enable_whisper_stt_summary">Use on-device AI for voice typing. Tap the mic button in the toolbar to start recording. Requires downloading Whisper model (~40MB).</string>
-    <string name="enable_llama_llm">Enable LLM Text Transformation (Experimental)</string>
-    <string name="enable_llama_llm_summary">Use on-device AI (Llama 3.2 1B) to improve, fix grammar, and transform selected text. Long-press selected text to see options. Requires downloading model (~1GB).</string>
-    <string name="ai_model_not_loaded">AI model not loaded</string>
-    <string name="ai_download_model">Download AI Model</string>
-    <string name="ai_transform_improve">Improve</string>
-    <string name="ai_transform_fix_grammar">Fix Grammar</string>
-    <string name="ai_transform_formal">Make Formal</string>
-    <string name="ai_transform_casual">Make Casual</string>
-    <string name="ai_transform_shorten">Shorten</string>
-    <string name="ai_transform_expand">Expand</string>
-    <string name="ai_transform_summarize">Summarize</string>
-    <string name="ai_processing">Processing...</string>
-    <string name="ai_recording">Recording...</string>
-    <string name="ai_tap_to_stop">Tap to stop</string>
-
     <!-- Option for setting navbar to follow keyboard color -->
     <string name="theme_navbar">Color navigation bar</string>
     <!-- Theme name for light theme -->
