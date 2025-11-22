@@ -86,7 +86,6 @@ fun AdvancedSettingsScreen(
         if (BuildConfig.DEBUG || prefs.getBoolean(DebugSettings.PREF_SHOW_DEBUG_SETTINGS, Defaults.PREF_SHOW_DEBUG_SETTINGS))
             SettingsWithoutKey.DEBUG_SETTINGS else null,
         R.string.settings_category_experimental,
-        Settings.PREF_ENABLE_VIM_MODE,
         Settings.PREF_ENABLE_TEXT_TEMPLATES,
         Settings.PREF_EMOJI_MAX_SDK,
         Settings.PREF_URL_DETECTION,
@@ -217,9 +216,6 @@ fun createAdvancedSettings(context: Context) = listOf(
             name = it.title,
             onClick = { SettingsDestination.navigateTo(SettingsDestination.Debug) }
         ) { NextScreenIcon() }
-    },
-    Setting(context, Settings.PREF_ENABLE_VIM_MODE, R.string.enable_vim_mode, R.string.enable_vim_mode_summary) {
-        SwitchPreference(it, Defaults.PREF_ENABLE_VIM_MODE)
     },
     Setting(context, Settings.PREF_ENABLE_TEXT_TEMPLATES, R.string.enable_text_templates, R.string.enable_text_templates_summary) {
         SwitchPreference(it, Defaults.PREF_ENABLE_TEXT_TEMPLATES)

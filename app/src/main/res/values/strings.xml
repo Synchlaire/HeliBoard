@@ -680,14 +680,6 @@ New dictionary:
     <!-- Description for "amoled_mode" option. -->
     <string name="amoled_mode_summary">Use pure black backgrounds for dark themes (saves battery on OLED screens)</string>
 
-    <!-- Vim mode (experimental) -->
-    <string name="enable_vim_mode">Enable Vim mode (Experimental)</string>
-    <string name="enable_vim_mode_summary">Vi/Vim-style editing with Normal/Insert/Visual modes. Use ESC key or long-press Shift to toggle modes. Supports hjkl navigation, w/b word jump, d/c/y operations, and more.</string>
-    <string name="vim_mode_normal">NORMAL</string>
-    <string name="vim_mode_insert">INSERT</string>
-    <string name="vim_mode_visual">VISUAL</string>
-    <string name="vim_mode_visual_line">V-LINE</string>
-
     <!-- Text templates/expansion -->
     <string name="enable_text_templates">Enable text templates</string>
     <string name="enable_text_templates_summary">Automatically expand shortcuts into full text (e.g., "eml" → "your@email.com"). Type shortcut + space to expand.</string>

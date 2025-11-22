@@ -68,9 +68,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_TOOLBAR_CUSTOM_KEY_CODES = "toolbar_custom_key_codes";
     public static final String PREF_LAYOUT_PREFIX = "layout_";
 
-    // Vim mode (experimental)
-    public static final String PREF_ENABLE_VIM_MODE = "enable_vim_mode";
-
     // Text templates/expansion
     public static final String PREF_ENABLE_TEXT_TEMPLATES = "enable_text_templates";
 
