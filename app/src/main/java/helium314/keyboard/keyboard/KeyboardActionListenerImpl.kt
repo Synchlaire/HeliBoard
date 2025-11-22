@@ -23,11 +23,15 @@ import helium314.keyboard.latin.common.combiningRange
 import helium314.keyboard.latin.common.loopOverCodePoints
 import helium314.keyboard.latin.common.loopOverCodePointsBackwards
 import helium314.keyboard.latin.define.ProductionFlags
+import helium314.keyboard.latin.ai.AIManager
 import helium314.keyboard.latin.inputlogic.CursorFloatingIndicator
 import helium314.keyboard.latin.inputlogic.InputLogic
 import helium314.keyboard.latin.settings.Settings
 import helium314.keyboard.latin.utils.SubtypeSettings
 import helium314.keyboard.latin.utils.TextTemplateManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -52,9 +56,15 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
     private var initialSubtype: InputMethodSubtype? = null
     private var subtypeSwitchCount = 0
 
+    // Coroutine scope for AI operations
+    private val aiScope = CoroutineScope(Dispatchers.Main)
+
     init {
         // Initialize text templates
         TextTemplateManager.init(latinIME)
+
+        // Initialize AI manager
+        AIManager.init(latinIME, latinIME.prefs())
     }
 
     private fun checkAndExpandTemplate(): Boolean {
@@ -77,6 +87,97 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
         connection.commitText(template.expansion, 1)
 
         return true
+    }
+
+    /**
+     * Transform selected text using LLM
+     */
+    fun transformSelectedText(operation: helium314.keyboard.latin.ai.LlamaLLM.TransformOperation) {
+        val llamaLLM = AIManager.getLlamaLLM()
+        if (llamaLLM == null || !llamaLLM.isModelLoaded()) {
+            android.widget.Toast.makeText(
+                latinIME,
+                "LLM model not loaded. Please download the model first.",
+                android.widget.Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        // Get selected text
+        val selectedText = connection.getSelectedText(0)?.toString()
+        if (selectedText.isNullOrEmpty()) {
+            android.widget.Toast.makeText(
+                latinIME,
+                "No text selected",
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        // Show processing indicator
+        android.widget.Toast.makeText(latinIME, "Processing...", android.widget.Toast.LENGTH_SHORT).show()
+
+        // Transform the text
+        aiScope.launch {
+            llamaLLM.transformText(
+                text = selectedText,
+                operation = operation,
+                onProgress = { partial ->
+                    // Could show progress if we have a UI for it
+                },
+                onComplete = { result ->
+                    // Replace selected text with transformed text
+                    connection.commitText(result, 1)
+                },
+                onError = { error ->
+                    android.widget.Toast.makeText(latinIME, error, android.widget.Toast.LENGTH_SHORT).show()
+                }
+            )
+        }
+    }
+
+    /**
+     * Handle Whisper speech-to-text input
+     */
+    private fun handleWhisperInput() {
+        val whisperSTT = AIManager.getWhisperSTT()
+        if (whisperSTT == null || !whisperSTT.isModelLoaded()) {
+            // Show toast that model is not loaded
+            android.widget.Toast.makeText(
+                latinIME,
+                "Whisper model not loaded. Please download the model first.",
+                android.widget.Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        // Start recording
+        aiScope.launch {
+            val session = whisperSTT.startRecording(
+                onResult = { text ->
+                    // Insert transcribed text
+                    connection.commitText(text, 1)
+                },
+                onError = { error ->
+                    android.widget.Toast.makeText(latinIME, error, android.widget.Toast.LENGTH_SHORT).show()
+                }
+            )
+
+            if (!session.isValid()) {
+                android.widget.Toast.makeText(
+                    latinIME,
+                    "Failed to start recording",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+                return@launch
+            }
+
+            // Show recording indicator (could be improved with a proper UI)
+            android.widget.Toast.makeText(latinIME, "Recording... Tap mic again to stop", android.widget.Toast.LENGTH_SHORT).show()
+
+            // TODO: Add a proper recording indicator in the keyboard UI
+            // For now, user needs to tap voice button again to stop recording
+        }
     }
 
     override fun onPressKey(primaryCode: Int, repeatCount: Int, isSinglePointer: Boolean, hapticEvent: HapticEvent) {
@@ -136,6 +237,15 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
         when (primaryCode) {
             KeyCode.TOGGLE_AUTOCORRECT -> return settings.toggleAutoCorrect()
             KeyCode.TOGGLE_INCOGNITO_MODE -> return settings.toggleAlwaysIncognitoMode()
+            KeyCode.VOICE_INPUT -> {
+                // Check if Whisper STT is enabled
+                val prefs = latinIME.prefs()
+                if (prefs.getBoolean(Settings.PREF_ENABLE_WHISPER_STT, helium314.keyboard.latin.settings.Defaults.PREF_ENABLE_WHISPER_STT)) {
+                    handleWhisperInput()
+                    return
+                }
+                // Otherwise, fall through to default voice input
+            }
         }
 
         // Check for template expansion on space

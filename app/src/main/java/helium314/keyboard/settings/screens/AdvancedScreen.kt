@@ -87,6 +87,8 @@ fun AdvancedSettingsScreen(
             SettingsWithoutKey.DEBUG_SETTINGS else null,
         R.string.settings_category_experimental,
         Settings.PREF_ENABLE_TEXT_TEMPLATES,
+        Settings.PREF_ENABLE_WHISPER_STT,
+        Settings.PREF_ENABLE_LLAMA_LLM,
         Settings.PREF_EMOJI_MAX_SDK,
         Settings.PREF_URL_DETECTION,
         if (BuildConfig.BUILD_TYPE != "nouserlib") SettingsWithoutKey.LOAD_GESTURE_LIB else null
@@ -219,6 +221,12 @@ fun createAdvancedSettings(context: Context) = listOf(
     },
     Setting(context, Settings.PREF_ENABLE_TEXT_TEMPLATES, R.string.enable_text_templates, R.string.enable_text_templates_summary) {
         SwitchPreference(it, Defaults.PREF_ENABLE_TEXT_TEMPLATES)
+    },
+    Setting(context, Settings.PREF_ENABLE_WHISPER_STT, R.string.enable_whisper_stt, R.string.enable_whisper_stt_summary) {
+        SwitchPreference(it, Defaults.PREF_ENABLE_WHISPER_STT)
+    },
+    Setting(context, Settings.PREF_ENABLE_LLAMA_LLM, R.string.enable_llama_llm, R.string.enable_llama_llm_summary) {
+        SwitchPreference(it, Defaults.PREF_ENABLE_LLAMA_LLM)
     },
     Setting(context, Settings.PREF_EMOJI_MAX_SDK, R.string.prefs_key_emoji_max_sdk) { setting ->
         val ctx = LocalContext.current
