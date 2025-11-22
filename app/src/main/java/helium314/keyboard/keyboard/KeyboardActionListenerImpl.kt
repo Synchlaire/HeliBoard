@@ -27,6 +27,8 @@ import helium314.keyboard.latin.inputlogic.CursorFloatingIndicator
 import helium314.keyboard.latin.inputlogic.InputLogic
 import helium314.keyboard.latin.settings.Settings
 import helium314.keyboard.latin.utils.SubtypeSettings
+import helium314.keyboard.latin.vim.VimMode
+import helium314.keyboard.latin.vim.VimModeManager
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -47,9 +49,33 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
     private val cursorFloatingIndicator by lazy { CursorFloatingIndicator(latinIME) }
     private var isCursorControlActive = false
 
+    // Vim mode manager
+    private val vimModeManager = VimModeManager { mode ->
+        updateVimModeIndicator(mode)
+    }
+
     // language slide state
     private var initialSubtype: InputMethodSubtype? = null
     private var subtypeSwitchCount = 0
+
+    init {
+        // Initialize vim mode based on settings
+        updateVimModeFromSettings()
+    }
+
+    private fun updateVimModeFromSettings() {
+        val prefs = latinIME.prefs()
+        vimModeManager.isEnabled = prefs.getBoolean(
+            helium314.keyboard.latin.settings.Settings.PREF_ENABLE_VIM_MODE,
+            helium314.keyboard.latin.settings.Defaults.PREF_ENABLE_VIM_MODE
+        )
+    }
+
+    private fun updateVimModeIndicator(mode: VimMode) {
+        // TODO: Show vim mode indicator in suggestion strip
+        // For now, we'll just log it
+        // Log.d("Vim", "Mode changed to: $mode")
+    }
 
     override fun onPressKey(primaryCode: Int, repeatCount: Int, isSinglePointer: Boolean, hapticEvent: HapticEvent) {
         metaOnPressKey(primaryCode)
@@ -59,6 +85,17 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
     }
 
     override fun onLongPressKey(primaryCode: Int) {
+        // Long-press Shift to toggle vim mode
+        if (vimModeManager.isEnabled && primaryCode == KeyCode.SHIFT) {
+            if (vimModeManager.getCurrentMode() == VimMode.NORMAL) {
+                vimModeManager.enterInsertMode()
+            } else {
+                vimModeManager.enterNormalMode()
+            }
+            performHapticFeedback(HapticEvent.KEY_LONG_PRESS)
+            return
+        }
+
         metaOnLongPressKey(primaryCode)
         performHapticFeedback(HapticEvent.KEY_LONG_PRESS)
     }
@@ -109,6 +146,12 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
             KeyCode.TOGGLE_AUTOCORRECT -> return settings.toggleAutoCorrect()
             KeyCode.TOGGLE_INCOGNITO_MODE -> return settings.toggleAlwaysIncognitoMode()
         }
+
+        // Check if vim mode should handle this key
+        if (vimModeManager.isEnabled && vimModeManager.processKey(primaryCode, connection)) {
+            return  // Vim mode handled it
+        }
+
         val mkv = keyboardSwitcher.mainKeyboardView
 
         // checking if the character is a combining accent
