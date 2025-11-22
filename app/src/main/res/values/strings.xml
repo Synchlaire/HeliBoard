@@ -688,6 +688,12 @@ New dictionary:
     <string name="vim_mode_visual">VISUAL</string>
     <string name="vim_mode_visual_line">V-LINE</string>
 
+    <!-- Text templates/expansion -->
+    <string name="enable_text_templates">Enable text templates</string>
+    <string name="enable_text_templates_summary">Automatically expand shortcuts into full text (e.g., "eml" → "your@email.com"). Type shortcut + space to expand.</string>
+    <string name="manage_text_templates">Manage templates</string>
+    <string name="manage_text_templates_summary">Add, edit, or remove text expansion shortcuts</string>
+
     <!-- Option for setting navbar to follow keyboard color -->
     <string name="theme_navbar">Color navigation bar</string>
     <!-- Theme name for light theme -->

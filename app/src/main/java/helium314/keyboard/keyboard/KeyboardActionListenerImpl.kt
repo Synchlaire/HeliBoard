@@ -27,6 +27,7 @@ import helium314.keyboard.latin.inputlogic.CursorFloatingIndicator
 import helium314.keyboard.latin.inputlogic.InputLogic
 import helium314.keyboard.latin.settings.Settings
 import helium314.keyboard.latin.utils.SubtypeSettings
+import helium314.keyboard.latin.utils.TextTemplateManager
 import helium314.keyboard.latin.vim.VimMode
 import helium314.keyboard.latin.vim.VimModeManager
 import kotlin.math.abs
@@ -61,6 +62,9 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
     init {
         // Initialize vim mode based on settings
         updateVimModeFromSettings()
+
+        // Initialize text templates
+        TextTemplateManager.init(latinIME)
     }
 
     private fun updateVimModeFromSettings() {
@@ -75,6 +79,28 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
         // TODO: Show vim mode indicator in suggestion strip
         // For now, we'll just log it
         // Log.d("Vim", "Mode changed to: $mode")
+    }
+
+    private fun checkAndExpandTemplate(): Boolean {
+        val prefs = latinIME.prefs()
+        if (!prefs.getBoolean(Settings.PREF_ENABLE_TEXT_TEMPLATES, helium314.keyboard.latin.settings.Defaults.PREF_ENABLE_TEXT_TEMPLATES)) {
+            return false
+        }
+
+        // Get text before cursor
+        val textBeforeCursor = connection.getTextBeforeCursor(100, 0)?.toString() ?: return false
+
+        // Check if there's a template to expand
+        val result = TextTemplateManager.findTemplateInText(textBeforeCursor) ?: return false
+        val (template, shortcutLength) = result
+
+        // Delete the shortcut
+        connection.deleteSurroundingText(shortcutLength, 0)
+
+        // Insert the expansion
+        connection.commitText(template.expansion, 1)
+
+        return true
     }
 
     override fun onPressKey(primaryCode: Int, repeatCount: Int, isSinglePointer: Boolean, hapticEvent: HapticEvent) {
@@ -145,6 +171,13 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
         when (primaryCode) {
             KeyCode.TOGGLE_AUTOCORRECT -> return settings.toggleAutoCorrect()
             KeyCode.TOGGLE_INCOGNITO_MODE -> return settings.toggleAlwaysIncognitoMode()
+        }
+
+        // Check for template expansion on space
+        if (primaryCode == Constants.CODE_SPACE && !isKeyRepeat) {
+            if (checkAndExpandTemplate()) {
+                return  // Template was expanded
+            }
         }
 
         // Check if vim mode should handle this key

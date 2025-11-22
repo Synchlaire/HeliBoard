@@ -87,6 +87,7 @@ fun AdvancedSettingsScreen(
             SettingsWithoutKey.DEBUG_SETTINGS else null,
         R.string.settings_category_experimental,
         Settings.PREF_ENABLE_VIM_MODE,
+        Settings.PREF_ENABLE_TEXT_TEMPLATES,
         Settings.PREF_EMOJI_MAX_SDK,
         Settings.PREF_URL_DETECTION,
         if (BuildConfig.BUILD_TYPE != "nouserlib") SettingsWithoutKey.LOAD_GESTURE_LIB else null
@@ -219,6 +220,9 @@ fun createAdvancedSettings(context: Context) = listOf(
     },
     Setting(context, Settings.PREF_ENABLE_VIM_MODE, R.string.enable_vim_mode, R.string.enable_vim_mode_summary) {
         SwitchPreference(it, Defaults.PREF_ENABLE_VIM_MODE)
+    },
+    Setting(context, Settings.PREF_ENABLE_TEXT_TEMPLATES, R.string.enable_text_templates, R.string.enable_text_templates_summary) {
+        SwitchPreference(it, Defaults.PREF_ENABLE_TEXT_TEMPLATES)
     },
     Setting(context, Settings.PREF_EMOJI_MAX_SDK, R.string.prefs_key_emoji_max_sdk) { setting ->
         val ctx = LocalContext.current
