@@ -1,0 +1,51 @@
+name: Build Feature Branch APK
+
+on:
+  push:
+    branches:
+      - 'claude/**'  # Automatically build all Claude feature branches
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - uses: gradle/actions/setup-gradle@v3
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: HeliBoard-feature-debug-${{ github.ref_name }}
+          path: app/build/outputs/apk/debug/*-debug*.apk
+
+      - name: Upload APK to release (optional)
+        if: startsWith(github.ref, 'refs/heads/claude/')
+        uses: actions/upload-artifact@v4
+        with:
+          name: HeliBoard-debug
+          path: app/build/outputs/apk/debug/*-debug*.apk
+          retention-days: 30
+
+      - name: Archive reports for failed job
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-reports
+          path: '*/build/reports'
+        if: ${{ failure() }}
