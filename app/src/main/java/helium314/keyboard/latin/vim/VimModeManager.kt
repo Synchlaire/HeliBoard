@@ -269,13 +269,15 @@ class VimModeManager(private val modeChangeCallback: (VimMode) -> Unit) {
     }
 
     private fun moveWordForward(connection: InputConnection) {
-        connection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT, 0, KeyEvent.META_CTRL_ON))
-        connection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_RIGHT, 0, KeyEvent.META_CTRL_ON))
+        val downTime = android.os.SystemClock.uptimeMillis()
+        connection.sendKeyEvent(KeyEvent(downTime, downTime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT, 0, KeyEvent.META_CTRL_ON))
+        connection.sendKeyEvent(KeyEvent(downTime, downTime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_RIGHT, 0, KeyEvent.META_CTRL_ON))
     }
 
     private fun moveWordBackward(connection: InputConnection) {
-        connection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_LEFT, 0, KeyEvent.META_CTRL_ON))
-        connection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_LEFT, 0, KeyEvent.META_CTRL_ON))
+        val downTime = android.os.SystemClock.uptimeMillis()
+        connection.sendKeyEvent(KeyEvent(downTime, downTime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_LEFT, 0, KeyEvent.META_CTRL_ON))
+        connection.sendKeyEvent(KeyEvent(downTime, downTime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_LEFT, 0, KeyEvent.META_CTRL_ON))
     }
 
     private fun moveToLineStart(connection: InputConnection) {
@@ -289,13 +291,15 @@ class VimModeManager(private val modeChangeCallback: (VimMode) -> Unit) {
     }
 
     private fun moveToDocumentStart(connection: InputConnection) {
-        connection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MOVE_HOME, 0, KeyEvent.META_CTRL_ON))
-        connection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MOVE_HOME, 0, KeyEvent.META_CTRL_ON))
+        val downTime = android.os.SystemClock.uptimeMillis()
+        connection.sendKeyEvent(KeyEvent(downTime, downTime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MOVE_HOME, 0, KeyEvent.META_CTRL_ON))
+        connection.sendKeyEvent(KeyEvent(downTime, downTime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MOVE_HOME, 0, KeyEvent.META_CTRL_ON))
     }
 
     private fun moveToDocumentEnd(connection: InputConnection) {
-        connection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MOVE_END, 0, KeyEvent.META_CTRL_ON))
-        connection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MOVE_END, 0, KeyEvent.META_CTRL_ON))
+        val downTime = android.os.SystemClock.uptimeMillis()
+        connection.sendKeyEvent(KeyEvent(downTime, downTime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MOVE_END, 0, KeyEvent.META_CTRL_ON))
+        connection.sendKeyEvent(KeyEvent(downTime, downTime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MOVE_END, 0, KeyEvent.META_CTRL_ON))
     }
 
     // Operation implementations
