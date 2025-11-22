@@ -102,7 +102,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
     // Parameters for pointer handling.
     private static PointerTrackerParams sParams;
-    private static final int sPointerStep = KtxKt.dpToPx(10, Resources.getSystem());
+    // Pointer step size for spacebar cursor control (smaller = smoother movement)
+    private static final int sPointerStep = KtxKt.dpToPx(4, Resources.getSystem());
     private static GestureStrokeRecognitionParams sGestureStrokeRecognitionParams;
     private static GestureStrokeDrawingParams sGestureStrokeDrawingParams;
 

@@ -23,6 +23,7 @@ import helium314.keyboard.latin.common.combiningRange
 import helium314.keyboard.latin.common.loopOverCodePoints
 import helium314.keyboard.latin.common.loopOverCodePointsBackwards
 import helium314.keyboard.latin.define.ProductionFlags
+import helium314.keyboard.latin.inputlogic.CursorFloatingIndicator
 import helium314.keyboard.latin.inputlogic.InputLogic
 import helium314.keyboard.latin.settings.Settings
 import helium314.keyboard.latin.utils.SubtypeSettings
@@ -41,6 +42,10 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
     private val keyboardSwitcher = KeyboardSwitcher.getInstance()
     private val settings = Settings.getInstance()
     private val audioAndHapticFeedbackManager = AudioAndHapticFeedbackManager.getInstance()
+
+    // Cursor floating indicator for smooth spacebar cursor control
+    private val cursorFloatingIndicator by lazy { CursorFloatingIndicator(latinIME) }
+    private var isCursorControlActive = false
 
     // language slide state
     private var initialSubtype: InputMethodSubtype? = null
@@ -146,14 +151,20 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
     }
 
     override fun onHorizontalSpaceSwipe(steps: Int): Boolean = when (Settings.getValues().mSpaceSwipeHorizontal) {
-        KeyboardActionListener.SWIPE_MOVE_CURSOR -> onMoveCursorHorizontally(steps)
+        KeyboardActionListener.SWIPE_MOVE_CURSOR -> {
+            showCursorIndicatorIfNeeded()
+            onMoveCursorHorizontally(steps)
+        }
         KeyboardActionListener.SWIPE_SWITCH_LANGUAGE -> onLanguageSlide(steps)
         KeyboardActionListener.SWIPE_TOGGLE_NUMPAD -> toggleNumpad(false, false)
         else -> false
     }
 
     override fun onVerticalSpaceSwipe(steps: Int): Boolean = when (Settings.getValues().mSpaceSwipeVertical) {
-        KeyboardActionListener.SWIPE_MOVE_CURSOR -> onMoveCursorVertically(steps)
+        KeyboardActionListener.SWIPE_MOVE_CURSOR -> {
+            showCursorIndicatorIfNeeded()
+            onMoveCursorVertically(steps)
+        }
         KeyboardActionListener.SWIPE_SWITCH_LANGUAGE -> onLanguageSlide(steps)
         KeyboardActionListener.SWIPE_TOGGLE_NUMPAD -> toggleNumpad(false, false)
         KeyboardActionListener.SWIPE_HIDE_KEYBOARD -> {
@@ -164,8 +175,28 @@ class KeyboardActionListenerImpl(private val latinIME: LatinIME, private val inp
     }
 
     override fun onEndSpaceSwipe(){
+        hideCursorIndicator()
         initialSubtype = null
         subtypeSwitchCount = 0
+    }
+
+    private fun showCursorIndicatorIfNeeded() {
+        if (!isCursorControlActive) {
+            isCursorControlActive = true
+            val keyboardView = keyboardSwitcher.mainKeyboardView ?: return
+            // Show indicator at center of keyboard for now
+            // TODO: Update position based on actual touch coordinates
+            val x = keyboardView.width / 2
+            val y = keyboardView.height / 2
+            cursorFloatingIndicator.showAt(keyboardView, x, y)
+        }
+    }
+
+    private fun hideCursorIndicator() {
+        if (isCursorControlActive) {
+            isCursorControlActive = false
+            cursorFloatingIndicator.dismiss()
+        }
     }
 
     override fun toggleNumpad(withSliding: Boolean, forceReturnToAlpha: Boolean): Boolean {
