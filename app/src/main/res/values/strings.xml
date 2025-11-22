@@ -675,6 +675,10 @@ New dictionary:
     <string name="day_night_mode">Auto day/night mode</string>
     <!-- Description for "day_night_mode" option. -->
     <string name="day_night_mode_summary">Appearance will follow system settings</string>
+    <!-- Option for AMOLED mode (pure black backgrounds) -->
+    <string name="amoled_mode">AMOLED mode</string>
+    <!-- Description for "amoled_mode" option. -->
+    <string name="amoled_mode_summary">Use pure black backgrounds for dark themes (saves battery on OLED screens)</string>
     <!-- Option for setting navbar to follow keyboard color -->
     <string name="theme_navbar">Color navigation bar</string>
     <!-- Theme name for light theme -->

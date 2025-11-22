@@ -146,6 +146,7 @@ private constructor(val themeId: Int, @JvmField val mStyleId: Int) {
         private fun getThemeColors(themeName: String, themeStyle: String, context: Context, prefs: SharedPreferences, isNight: Boolean): Colors {
             val hasBorders = prefs.getBoolean(Settings.PREF_THEME_KEY_BORDERS, Defaults.PREF_THEME_KEY_BORDERS)
             val backgroundImage = Settings.readUserBackgroundImage(context, isNight)
+            val amoledMode = prefs.getBoolean(Settings.PREF_THEME_AMOLED_MODE, Defaults.PREF_THEME_AMOLED_MODE)
             return when (themeName) {
                 THEME_DYNAMIC -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) DynamicColors(context, themeStyle, hasBorders, backgroundImage)
@@ -167,10 +168,10 @@ private constructor(val themeId: Int, @JvmField val mStyleId: Int) {
                     themeStyle,
                     hasBorders,
                     ContextCompat.getColor(context, R.color.gesture_trail_color_lxx_dark),
-                    "#263238".toColorInt(),
-                    "#364248".toColorInt(),
-                    "#2d393f".toColorInt(),
-                    "#364248".toColorInt(),
+                    if (amoledMode && isNight) Color.BLACK else "#263238".toColorInt(),
+                    if (amoledMode && isNight) 0x1A1A1A else "#364248".toColorInt(),
+                    if (amoledMode && isNight) 0x1A1A1A else "#2d393f".toColorInt(),
+                    if (amoledMode && isNight) 0x1A1A1A else "#364248".toColorInt(),
                     ContextCompat.getColor(context, R.color.key_text_color_lxx_dark),
                     ContextCompat.getColor(context, R.color.key_hint_letter_color_lxx_dark),
                     keyboardBackground = backgroundImage
@@ -193,10 +194,10 @@ private constructor(val themeId: Int, @JvmField val mStyleId: Int) {
                     themeStyle,
                     hasBorders,
                     ContextCompat.getColor(context, R.color.gesture_trail_color_lxx_dark),
-                    ContextCompat.getColor(context, R.color.keyboard_background_lxx_dark_border),
-                    ContextCompat.getColor(context, R.color.key_background_normal_lxx_dark_border),
-                    ContextCompat.getColor(context, R.color.key_background_functional_lxx_dark_border),
-                    ContextCompat.getColor(context, R.color.key_background_normal_lxx_dark_border),
+                    if (amoledMode && isNight) Color.BLACK else ContextCompat.getColor(context, R.color.keyboard_background_lxx_dark_border),
+                    if (amoledMode && isNight) 0x1A1A1A else ContextCompat.getColor(context, R.color.key_background_normal_lxx_dark_border),
+                    if (amoledMode && isNight) 0x1A1A1A else ContextCompat.getColor(context, R.color.key_background_functional_lxx_dark_border),
+                    if (amoledMode && isNight) 0x1A1A1A else ContextCompat.getColor(context, R.color.key_background_normal_lxx_dark_border),
                     ContextCompat.getColor(context, R.color.key_text_color_lxx_dark),
                     ContextCompat.getColor(context, R.color.key_hint_letter_color_lxx_dark),
                     keyboardBackground = backgroundImage
@@ -241,10 +242,10 @@ private constructor(val themeId: Int, @JvmField val mStyleId: Int) {
                     themeStyle,
                     hasBorders,
                     Color.rgb(80, 128, 255),
-                    Color.rgb(140, 112, 94),
-                    Color.rgb(193, 163, 146),
-                    Color.rgb(168, 127, 103),
-                    Color.rgb(193, 163, 146),
+                    if (amoledMode && isNight) Color.BLACK else Color.rgb(140, 112, 94),
+                    if (amoledMode && isNight) 0x1A1A1A else Color.rgb(193, 163, 146),
+                    if (amoledMode && isNight) 0x1A1A1A else Color.rgb(168, 127, 103),
+                    if (amoledMode && isNight) 0x1A1A1A else Color.rgb(193, 163, 146),
                     Color.WHITE,
                     Color.WHITE,
                     keyboardBackground = backgroundImage
@@ -253,10 +254,10 @@ private constructor(val themeId: Int, @JvmField val mStyleId: Int) {
                     themeStyle,
                     hasBorders,
                     Color.rgb(255, 113, 129),
-                    Color.rgb(81, 97, 113),
-                    Color.rgb(117, 128, 142),
-                    Color.rgb(99, 109, 121),
-                    Color.rgb(117, 128, 142),
+                    if (amoledMode && isNight) Color.BLACK else Color.rgb(81, 97, 113),
+                    if (amoledMode && isNight) 0x1A1A1A else Color.rgb(117, 128, 142),
+                    if (amoledMode && isNight) 0x1A1A1A else Color.rgb(99, 109, 121),
+                    if (amoledMode && isNight) 0x1A1A1A else Color.rgb(117, 128, 142),
                     Color.WHITE,
                     Color.WHITE,
                     keyboardBackground = backgroundImage
@@ -291,10 +292,10 @@ private constructor(val themeId: Int, @JvmField val mStyleId: Int) {
                     themeStyle,
                     hasBorders,
                     Color.rgb(255, 124, 0),
-                    Color.rgb(89, 109, 155),
-                    Color.rgb(132, 157, 212),
-                    Color.rgb(81, 116, 194),
-                    Color.rgb(132, 157, 212),
+                    if (amoledMode && isNight) Color.BLACK else Color.rgb(89, 109, 155),
+                    if (amoledMode && isNight) 0x1A1A1A else Color.rgb(132, 157, 212),
+                    if (amoledMode && isNight) 0x1A1A1A else Color.rgb(81, 116, 194),
+                    if (amoledMode && isNight) 0x1A1A1A else Color.rgb(132, 157, 212),
                     Color.WHITE,
                     Color.WHITE,
                     keyboardBackground = backgroundImage
@@ -327,10 +328,10 @@ private constructor(val themeId: Int, @JvmField val mStyleId: Int) {
                     themeStyle,
                     hasBorders,
                     Color.rgb(255, 96, 255),
-                    Color.rgb(112, 112, 174),
-                    Color.rgb(150, 150, 216),
-                    Color.rgb(123, 123, 206),
-                    Color.rgb(150, 150, 216),
+                    if (amoledMode && isNight) Color.BLACK else Color.rgb(112, 112, 174),
+                    if (amoledMode && isNight) 0x1A1A1A else Color.rgb(150, 150, 216),
+                    if (amoledMode && isNight) 0x1A1A1A else Color.rgb(123, 123, 206),
+                    if (amoledMode && isNight) 0x1A1A1A else Color.rgb(150, 150, 216),
                     Color.WHITE,
                     Color.WHITE,
                     keyboardBackground = backgroundImage

@@ -87,6 +87,7 @@ interface Colors {
 class DynamicColors(context: Context, override val themeStyle: String, override val hasKeyBorders: Boolean, private var keyboardBackground: Drawable? = null) : Colors {
 
     private val isNight = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+    private val amoledMode = context.prefs().getBoolean(helium314.keyboard.latin.settings.Settings.PREF_THEME_AMOLED_MODE, helium314.keyboard.latin.settings.Defaults.PREF_THEME_AMOLED_MODE)
 
     private val accent = getAccent(context)
     private val gesture = getGesture(context)
@@ -102,9 +103,11 @@ class DynamicColors(context: Context, override val themeStyle: String, override 
         else ContextCompat.getColor(context, android.R.color.system_accent1_200)
     private fun getGesture(context: Context) = if (isNight) accent
         else ContextCompat.getColor(context, android.R.color.system_accent1_600)
-    private fun getBackground(context: Context) = if (isNight) ContextCompat.getColor(context, android.R.color.system_neutral1_900)
+    private fun getBackground(context: Context) = if (isNight && amoledMode) Color.BLACK
+        else if (isNight) ContextCompat.getColor(context, android.R.color.system_neutral1_900)
         else ContextCompat.getColor(context, android.R.color.system_neutral1_50)
-    private fun getKeyBackground(context: Context) = if (isNight) ContextCompat.getColor(context, android.R.color.system_neutral1_800)
+    private fun getKeyBackground(context: Context) = if (isNight && amoledMode) 0x1A1A1A // Very dark gray for keys to maintain visibility
+        else if (isNight) ContextCompat.getColor(context, android.R.color.system_neutral1_800)
         else  ContextCompat.getColor(context, android.R.color.system_neutral1_0)
     private fun getFunctionalKey(context: Context) = if (isNight) ContextCompat.getColor(context, android.R.color.system_accent2_300)
         else ContextCompat.getColor(context, android.R.color.system_accent2_100)
